@@ -8,6 +8,7 @@ byUserFriendList <- function()
   library(wordcloud)
   library(dplyr)
   library(SnowballC)
+  library(fpc)
   
   # Declare Twitter API Credentials
   api_key <- "vl7qDRn1ooQbeksFv4RwrBQ1d"#"API KEY" # From dev.twitter.com
@@ -26,7 +27,7 @@ byUserFriendList <- function()
   
   print(length(followingList))
   
-  userTweets <- userTimeline(followingList[[1]], 10, includeRts = F)
+  userTweets <- userTimeline(followingList[[1]], 50, includeRts = F)
   userTweets = sapply(userTweets, function(x) x$getText())
   
   userTweets = removeWords(userTweets, c(stopwords("spanish")))
@@ -49,7 +50,24 @@ byUserFriendList <- function()
   distMatrix <- dist(scale(m2))
   fit <- hclust(distMatrix, method = "ward.D2")
   plot(fit)
-  rect.hclust(fit, k = 2) # cut tree into 6 clusters
+  rect.hclust(fit, k = 6) # cut tree into 6 clusters
+  
+  m3 <- t(m2) # transpose the matrix to cluster documents (tweets)
+  set.seed(122) # set a fixed random seed
+  k <- 6 # number of clusters
+  kmeansResult <- kmeans(m3, k)
+  round(kmeansResult$centers, digits = 3) # cluster centers
+  
+  # partitioning around medoids with estimation of number of clusters
+  pamResult <- pamk(m3, metric="manhattan")
+  k <- pamResult$nc # number of clusters identified
+  pamResult <- pamResult$pamobject
+  # print cluster medoids
+  for (i in 1:k) {
+    cat("cluster", i, ": ",
+        colnames(pamResult$medoids)[which(pamResult$medoids[i,]==1)], "\n")
+  }
+  
   
   m= as.matrix(tdm)
   wf <- sort(rowSums(m),decreasing=TRUE)
