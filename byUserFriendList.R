@@ -9,7 +9,6 @@ byUserFriendList <- function()
   library(dplyr)
   library(SnowballC)
   library(fpc)
-  library(topicmodels)
   
   # Declare Twitter API Credentials
   api_key <- "vl7qDRn1ooQbeksFv4RwrBQ1d"#"API KEY" # From dev.twitter.com
@@ -23,12 +22,12 @@ byUserFriendList <- function()
 #   token_secret <- 'HruRRrdqGPQWDtuUMaA5ywmdw5lNHFHjW2Eh1xukPJtTc'
   setup_twitter_oauth(api_key, api_secret, token, token_secret) #Create Twitter Connection
   
-  theUser <- twitteR::getUser(user = "Proyectomineria")
+  theUser <- twitteR::getUser(user = "josguerzamb")
   followingList <- theUser$getFriends()
   
   print(length(followingList))
   
-  userTweets <- userTimeline(followingList[[2]], 50, includeRts = F)
+  userTweets <- userTimeline(followingList[[1]], 50, includeRts = F)
   userTweets = sapply(userTweets, function(x) x$getText())
   
   userTweets = removeWords(userTweets, c(stopwords("spanish")))
@@ -47,12 +46,11 @@ byUserFriendList <- function()
   
   tdm2 <- removeSparseTerms(tdm, sparse = 0.95)
   m2 <- as.matrix(tdm2)
-  
   # cluster terms
   distMatrix <- dist(scale(m2))
   fit <- hclust(distMatrix, method = "ward.D2")
   plot(fit)
-  rect.hclust(fit, k = 3) # cut tree into 6 clusters
+  rect.hclust(fit, k = 6) # cut tree into 6 clusters
   
   m3 <- t(m2) # transpose the matrix to cluster documents (tweets)
   set.seed(122) # set a fixed random seed
@@ -77,24 +75,8 @@ byUserFriendList <- function()
   dm <- filter(dm, freq > 1)
   
   allDF <- list()
-  allDF[[2]] <- dm
-  View(allDF[[2]])
-  
-  #Set parameters for Gibbs sampling
-  burnin <- 4000
-  iter <- 2000
-  thin <- 500
-  seed <-list(2003,5,63,100001,765)
-  nstart <- 5
-  best <- TRUE
-  #Number of topics
-  k <- 5
-  #Run LDA using Gibbs sampling
-  ldaOut <-LDA(tdm,k, method="Gibbs", control=list(nstart=nstart, seed = seed, best=best, burnin = burnin, iter = iter, thin=thin))
-  #write out results
-  #docs to topics
-  ldaOut.topics <- as.matrix(topics(ldaOut))
-  write.csv(ldaOut.topics,file=paste("LDAGibbs",k,"DocsToTopics.csv"))
+  allDF[[1]] <- dm
+  View(allDF[[1]])
   
 #   for(i in 1:length(followingList))
 #   {
