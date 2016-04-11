@@ -28,12 +28,25 @@ byUserFriendList <- function()
   
   print(length(followingList))
   
-  userTweets <- userTimeline(followingList[[2]], 50, includeRts = F)
+  sw <- readLines("stopwords.es.txt", encoding="UTF-8")
+  sw = iconv(sw, to="ASCII//TRANSLIT")
+  
+  for(i in 1:length(followingList))
+  {
+    userTweetsHelper <- userTimeline(followingList[[i]], 50, includeRts = F)
+    userTweetsHelper = sapply(userTweets, function(x) x$getText())
+    userTweetsHelper = removeWords(userTweets, c(stopwords("spanish")))
+    userTweetsHelper = removeWords(userTweets,sw)
+    userTweetsHelper = cleanme(userTweets)
+    userTweetsHelper <- paste(userTweets, collapse= " ")
+    userTweets <- c(userTweets, userTweetsHelper)
+  }
+  
+  userTweets <- userTimeline(followingList[[1]], 50, includeRts = F)
   userTweets = sapply(userTweets, function(x) x$getText())
   
   userTweets = removeWords(userTweets, c(stopwords("spanish")))
-  sw <- readLines("stopwords.es.txt", encoding="UTF-8")
-  sw = iconv(sw, to="ASCII//TRANSLIT")
+
   userTweets = removeWords(userTweets,sw)
   
   userTweets = cleanme(userTweets) #clean the tweets
@@ -52,7 +65,7 @@ byUserFriendList <- function()
   distMatrix <- dist(scale(m2))
   fit <- hclust(distMatrix, method = "ward.D2")
   plot(fit)
-  rect.hclust(fit, k = 3) # cut tree into 6 clusters
+  rect.hclust(fit, k = 3) # cut tree into K clusters
   
   m3 <- t(m2) # transpose the matrix to cluster documents (tweets)
   set.seed(122) # set a fixed random seed
@@ -77,8 +90,8 @@ byUserFriendList <- function()
   dm <- filter(dm, freq > 1)
   
   allDF <- list()
-  allDF[[2]] <- dm
-  View(allDF[[2]])
+  allDF[[1]] <- dm
+  View(allDF[[1]])
   
   #Set parameters for Gibbs sampling
   burnin <- 4000
