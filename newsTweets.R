@@ -12,15 +12,15 @@ newsTweets <- function()
   library(topicmodels)
   
   # Declare Twitter API Credentials
-  api_key <- "vl7qDRn1ooQbeksFv4RwrBQ1d"#"API KEY" # From dev.twitter.com
-  api_secret <- "8O9WrcW6CFSw5K4y2FMlpxTDJWtgRJzj0Zt8aZx5D9rlK9LjMy"#"API Secret" # From dev.twitter.com
-  token <- "4815410248-drkzmNLBG3vVmQ9ek0yxmERqO6UVsSD32ZDfsCQ"#"Access token" # From dev.twitter.com
-  token_secret <- "J07InbjfqnUkBv1PrkluJrVLUX9Zg51elOZFsFCmc08yc"#"Access token secret" # From dev.twitter.com
+#   api_key <- "vl7qDRn1ooQbeksFv4RwrBQ1d"#"API KEY" # From dev.twitter.com
+#   api_secret <- "8O9WrcW6CFSw5K4y2FMlpxTDJWtgRJzj0Zt8aZx5D9rlK9LjMy"#"API Secret" # From dev.twitter.com
+#   token <- "4815410248-drkzmNLBG3vVmQ9ek0yxmERqO6UVsSD32ZDfsCQ"#"Access token" # From dev.twitter.com
+#   token_secret <- "J07InbjfqnUkBv1PrkluJrVLUX9Zg51elOZFsFCmc08yc"#"Access token secret" # From dev.twitter.com
   
-#     api_key <- 'FddtOQIiGtBYmm71TwnUOPuBe'
-#     api_secret <- 'x8qfMG3pfzZRLW625iQAnc5xX50FoSkeS9iqDMNrgEcvXaMg8w'
-#     token <- '4870643956-CiDLHJ4wmxwCcIWlIqYwFhmkoUBHuiBTYgzSSXs'
-#     token_secret <- 'HruRRrdqGPQWDtuUMaA5ywmdw5lNHFHjW2Eh1xukPJtTc'
+    api_key <- 'FddtOQIiGtBYmm71TwnUOPuBe'
+    api_secret <- 'x8qfMG3pfzZRLW625iQAnc5xX50FoSkeS9iqDMNrgEcvXaMg8w'
+    token <- '4870643956-CiDLHJ4wmxwCcIWlIqYwFhmkoUBHuiBTYgzSSXs'
+    token_secret <- 'HruRRrdqGPQWDtuUMaA5ywmdw5lNHFHjW2Eh1xukPJtTc'
   setup_twitter_oauth(api_key, api_secret, token, token_secret) #Create Twitter Connection
   
   theUser <- twitteR::getUser(user = "Proyectomineria")
@@ -32,10 +32,11 @@ newsTweets <- function()
   sw = iconv(sw, to="ASCII//TRANSLIT")
   userNames <- c()
   userTweets <- c()
+  followers <- c()
   #for(i in 1:length(followingList)/2)
-  for(i in 1:50)
+  #for(i in 1:50)
   #for(i in 51:100)
-  #for(i in 101:154)
+  for(i in 51:92)
   {
     print(i)
     userTweetsHelper <- userTimeline(followingList[[i]], 50, includeRts = F)
@@ -48,6 +49,7 @@ newsTweets <- function()
       userTweetsHelper <- paste(userTweetsHelper, collapse= " ")
       userTweets <- c(userTweets, userTweetsHelper)
       userNames <- c(userNames, followingList[[i]]$name)
+      followers <- c(followers, followingList[[i]]$followersCount)
     }
     else
     {
@@ -58,10 +60,11 @@ newsTweets <- function()
       userTweetsHelper <- paste(userTweetsHelper, collapse= " ")
       userTweets <- c(userTweets, userTweetsHelper)
       userNames <- c(userNames, followingList[[i]]$name)
+      followers <- c(followers, followingList[[i]]$followersCount)
     }
   }
-  final <- data.frame(userNames, userTweets)
-  write.csv(x = final, file = "tweetsNoticieros.csv")
+  final <- data.frame(userNames, userTweets, followers)
+  write.csv(x = final, file = "3_tweetsNoticierosLATAM2.csv")
   #View(final)
 }
 

@@ -10,17 +10,19 @@ newsProcessing <- function()
   library(SnowballC)
   library(fpc)
   library(topicmodels)
+  library(dplyr)
   
   #"que", "por", los del para con las mas una como este sobre sus son dos entre fue ser asi pero tras 
   #ante desde tene todo tres nos sera esto han estos dias donde muy estas sip cinco cuatro podria toda 
   #tus cual mismo cada les eso sido hora siete ellos uno era seis van the sabe sabes seg sino todas
   
   
-  file1 <- read.csv("tweetsNoticieros_1.csv", stringsAsFactors = FALSE)
-  file2 <- read.csv("tweetsNoticieros_2.csv", stringsAsFactors = FALSE)
-  file3 <- read.csv("tweetsNoticieros_3.csv", stringsAsFactors = FALSE)
+  file1 <- read.csv("3_tweetsNoticierosLATAM.csv", stringsAsFactors = FALSE)
+#   file2 <- read.csv("2_tweetsNoticieros2.csv", stringsAsFactors = FALSE)
+#   file3 <- read.csv("2_tweetsNoticieros3.csv", stringsAsFactors = FALSE)
+#   file4 <- read.csv("2_tweetsNoticieros4.csv", stringsAsFactors = FALSE)
   
-  allUserTweets <- rbind(file1, file2, file3)
+  allUserTweets <- rbind(file1)
   
   myStopwords <- c("que", "por", "los", "del", "para", "con", "las", "mas", "una", "como", "este", "sobre", "sus", "son",
                    "dos", "entre", "fue", "ser", "asi", "pero", "tras" ,
